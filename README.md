@@ -1,0 +1,1 @@
+# edd-license-activation-activity
