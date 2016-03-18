@@ -30,7 +30,7 @@ function eddlaa_submenu_page_display() {
 
     // Create a header in the default WordPress 'wrap' container
     $header = '<div class="wrap">';
-        $header .= '<img src="' . EDDLAA_URL . '/assets/img/user-faucet-icon.png" width="100px" style="display: inline-block; width: 50px; vertical-align: bottom; margin-right: 20px;"><h2 style="display: inline-block;">User Faucet</h2><hr />';
+        $header .= '<h2>EDD License Activation Activity</h2><hr />';
     $header .= '</div>';
 
     // Send the markup to the browser
@@ -67,17 +67,17 @@ function eddlaa_submenu_page_display() {
 
 function eddlaa_display_users() {
     $logs = edd_software_licensing()->get_license_logs('');
-    $license_id = edd_software_licensing()->get_download_id('');
+
+    //var_dump($logs);
 
     if( $logs ) {
         $i=0;
         foreach ( $logs as $log ) {
             if($i==10) break;
-            // Get the title of the action
             preg_match('/log-license-(.+?)-[0-9]+/ism', $log->post_name, $matches);
             $action = $matches[1];
 
-            $data = json_decode( get_post_field( 'post_content', $log->ID ) );
+            $data = json_decode(get_post_field('post_content', $log->ID));
             $lic_title = $log->post_title;
             //$pattern = '/^LOG - License Activated: /';
             preg_match('/(?P<name>\w+): (?P<digit>\d+)/', $lic_title, $licmatches);
@@ -87,20 +87,20 @@ function eddlaa_display_users() {
             //var_dump($downtitle);
 
             list($wp_info, $site_url) = explode(';', $data->HTTP_USER_AGENT);
-            list($wordpress, $version ) = explode( '/', $wp_info );
+            list($wordpress, $version) = explode('/', $wp_info);
 
-            $html .= '
-			<tr>
-				<td>' . $downtitle . '</td>
-				<td>
-					<a href="'.esc_attr( $site_url ) .'" target="_blank">'.esc_html( $site_url ) . '</a>
-				</td>
-				<td>'.esc_html( ucfirst($action) ). ' on '.esc_html( date_i18n( get_option( 'date_format' ), $data->REQUEST_TIME ) . ' ' . date_i18n( get_option( 'time_format' ), $data->REQUEST_TIME ) ).'
-				</td>
-				<td>'.esc_html( $version ) . '</td>
-			</tr>';
+                $results .= '
+                <tr>
+                    <td>' . $downtitle . '</td>
+                    <td>
+                        <a href="' . esc_attr($site_url) . '" target="_blank">' . esc_html($site_url) . '</a>
+                    </td>
+                    <td>' . esc_html(ucfirst($action)) . ' on ' . esc_html(date_i18n(get_option('date_format'), $data->REQUEST_TIME) . ' ' . date_i18n(get_option('time_format'), $data->REQUEST_TIME)) . '
+                    </td>
+                    <td>' . esc_html($version) . '</td>
+                </tr>';
 
-            echo $html;
+            echo $results;
             $i++;
         }
 } else {
