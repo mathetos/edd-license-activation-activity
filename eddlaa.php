@@ -35,14 +35,15 @@ define( 'EDDLAA_URL', plugin_dir_url( __FILE__ ) );
 define( 'EDDLAA_VERSION', '1.0' );
 
 class EDDLAA_Loader {
-  public function __construct() {
-    $this->plugin_slug = EDDLAA_SLUG;
-    $this->version = EDDLAA_VERSION;
+	public function __construct() {
+		$this->plugin_slug = EDDLAA_SLUG;
+		$this->version     = EDDLAA_VERSION;
 
-    add_action( 'plugins_loaded', array( $this, 'eddlaa_admin' ) );
-    add_action( 'admin_enqueue_scripts', array($this, 'eddlaa_load_admin_scripts') );
+		add_action( 'plugins_loaded', array( $this, 'eddlaa_admin' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'eddlaa_load_admin_scripts' ) );
+		add_action( 'rest_api_init', array( $this, 'api' ) );
 
-  }
+	}
 
   public function eddlaa_admin() {
       require_once( EDDLAA_PATH . '/admin/eddlaa_admin.php');
@@ -64,6 +65,12 @@ class EDDLAA_Loader {
 
   public function run() {
  }
+
+	public function api(){
+		include_once( dirname( __FILE__ ) . '/api/EDDLAA_Route.php' );
+		new EDDLAA_Route();
+
+	}
 }
 
 function run_eddlaa_loader() {
